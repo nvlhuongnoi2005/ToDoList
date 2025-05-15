@@ -116,3 +116,8 @@ button.edit i,
 button.delete i {
   pointer-events: none;
 }
+#watermark {
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.5;
+}
