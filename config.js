@@ -3,6 +3,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const addTaskButton = document.getElementById('add-task');
   const taskList = document.getElementById('task-list');
 
+  // Load tasks from localStorage
+  const loadTasks = () => {
+    const tasks = localStorage.getItem('tasks');
+    return tasks ? JSON.parse(tasks) : [];
+  };
+
+  // Save current task list to localStorage
+  const saveTasks = () => {
+    const tasks = [];
+    taskList.querySelectorAll('li span').forEach(span => {
+      tasks.push(span.textContent);
+    });
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  };
+
   const createTaskElement = (text) => {
     const li = document.createElement('li');
 
@@ -19,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const newText = prompt('Edit task:', span.textContent);
       if (newText !== null && newText.trim() !== '') {
         span.textContent = newText.trim();
+        saveTasks(); // Save after editing
       }
     });
 
@@ -29,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     deleteBtn.title = 'Delete';
     deleteBtn.addEventListener('click', () => {
       li.remove();
+      saveTasks(); // Save after deleting
     });
 
     li.appendChild(editBtn);
@@ -43,8 +60,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const taskItem = createTaskElement(taskText);
       taskList.appendChild(taskItem);
       taskInput.value = '';
+      saveTasks(); // Save after adding
     }
   };
+
+  // Load existing tasks on page load
+  const tasks = loadTasks();
+  tasks.forEach(taskText => {
+    const taskItem = createTaskElement(taskText);
+    taskList.appendChild(taskItem);
+  });
 
   addTaskButton.addEventListener('click', addTask);
   taskInput.addEventListener('keypress', (event) => {
